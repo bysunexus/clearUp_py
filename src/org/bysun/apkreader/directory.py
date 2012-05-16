@@ -43,10 +43,4 @@ class FileListBuilder(object):
     def getBasePath(self):
         '''返回基础目录路径'''
         return self.basePath
-    
-
-
-builder = FileListBuilder("D:\\apk_back",["apk"]);
-print builder.listFile()
-print builder.getBasePath()
 

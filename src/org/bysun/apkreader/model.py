@@ -16,4 +16,6 @@ class ApkInfoDto(object):
         self.version = -1
         self.versionCode = None
         self.cnName = None
+        self.apkFile = None
+        
         

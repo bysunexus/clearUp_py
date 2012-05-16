@@ -5,7 +5,7 @@ Created on 2012-5-14
 import os
 import re
 
-from org.bysun.apkreader.model.ApkInfoDto import ApkInfoDto
+from model import ApkInfoDto
 class ApkFileOperator(object):
     '''
     APK 文件操作
@@ -25,20 +25,47 @@ class ApkFileOperator(object):
             # 读取文件信息
             info = self.readApkInfo(apk)
             # 未读取到信息 继续
-            if bool(info.pkgName) or info.version == -1:
+            if not bool(info.pkgName) or info.version == -1:
                 continue
             #处理文件
+            self.processFile(info)
             
-            
-    def processFile(self,apk,info):
+    def processFile(self,info):
         '''
         处理apk文件
-        @param apk:string 
-        @param info: ApkInfoDto
         '''
-        vson = self.versions.get(info.pkgName)
+        if not self.versions.has_key(info.pkgName):
+            self.versions[info.pkgName] = info
+            self.renameFile(info);
+        else:
+            old = self.versions.get(info.pkgName)
+            if info.version>old.version:
+                #删除旧文件
+                self.deleteFile(old)
+                #改名新文件
+                self.renameFile(info)
+                #放入新版本信息
+                self.versions[info.pkgName] = info
+            else:
+                #删除读取到的文件
+                self.deleteFile(info)
+            
+    def renameFile(self,info):
+        fileName = self.transferCode(self.buildFileName(info), 'utf-8', 'gbk')
+        os.rename(info.apkFile, fileName)
+    
+    def deleteFile(self,info):
+        fileName = self.transferCode(self.buildFileName(info), 'utf-8', 'gbk')
+        os.remove(fileName)
         
-                
+    def transferCode(self,srcStr,fromCode,toCode):
+        tmp = unicode(srcStr,fromCode)
+        tmp = tmp.encode(toCode)
+        return tmp
+        
+    def buildFileName(self,info):
+        return self.baseFilePath+info.pkgName+'_'+str(info.version)+'_'+info.cnName+'.apk'
+        
     def readApkInfo(self,apk):
         '''
         读取并返回apk信息
@@ -47,13 +74,14 @@ class ApkFileOperator(object):
         info = ApkInfoDto()
         # 取得文件名
         info.name = os.path.splitext(apk)[0]
+        info.apkFile = apk
         cmd = 'aapt.exe dump badging "'+apk+'"'
         for lineStr in os.popen(cmd).readlines():
             if lineStr.startswith("package: name='") :
                 infos = re.match(r"package: name='(.*?)' versionCode='(.*?)' versionName='(.*?)'", lineStr).groups()
                 info.pkgName = infos[0]
                 info.version = int(infos[1])
-                info.versionCode = info[2]
+                info.versionCode = infos[2]
             elif lineStr.startswith("application: label='") :
                 infos = re.match(r"application: label='(.*?)' icon='.*?'", lineStr).groups()
                 info.cnName = infos[0]
