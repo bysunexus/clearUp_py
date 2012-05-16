@@ -9,7 +9,6 @@ from file import ApkFileOperator
 def process(path):
     builder = FileListBuilder(path,['apk'])
     apks = builder.listFile()
-    print apks
     operator = ApkFileOperator(path)
     operator.process(apks)
 
