@@ -1,4 +1,4 @@
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 '''
 Created on 2012-5-10
 
@@ -17,5 +17,3 @@ class ApkInfoDto(object):
         self.versionCode = None
         self.cnName = None
         self.apkFile = None
-        
-        

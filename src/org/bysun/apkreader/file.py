@@ -1,11 +1,13 @@
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 '''
 Created on 2012-5-14
 '''
 import os
 import re
 
-from model import ApkInfoDto
+from org.bysun.apkreader.model import ApkInfoDto
+from org.bysun.apkreader.codeUtils import transferCode
+
 class ApkFileOperator(object):
     '''
     APK 文件操作
@@ -51,17 +53,13 @@ class ApkFileOperator(object):
                 self.deleteFile(info)
             
     def renameFile(self,info):
-        fileName = self.transferCode(self.buildFileName(info), 'utf-8', 'gbk')
-        os.rename(info.apkFile, fileName)
+        fromFile = transferCode(info.apkFile, 'utf-8', 'gbk')
+        toFile = transferCode(self.buildFileName(info), 'utf-8', 'gbk')
+        os.rename(fromFile, toFile)
     
     def deleteFile(self,info):
-        fileName = self.transferCode(self.buildFileName(info), 'utf-8', 'gbk')
+        fileName = transferCode(self.buildFileName(info), 'utf-8', 'gbk')
         os.remove(fileName)
-        
-    def transferCode(self,srcStr,fromCode,toCode):
-        tmp = unicode(srcStr,fromCode)
-        tmp = tmp.encode(toCode)
-        return tmp
         
     def buildFileName(self,info):
         return self.baseFilePath+info.pkgName+'_'+str(info.version)+'_'+info.cnName+'.apk'
@@ -75,7 +73,7 @@ class ApkFileOperator(object):
         # 取得文件名
         info.name = os.path.splitext(apk)[0]
         info.apkFile = apk
-        cmd = 'aapt.exe dump badging "'+apk+'"'
+        cmd = transferCode('aapt.exe dump badging "'+apk+'"','utf-8','gbk')        
         for lineStr in os.popen(cmd).readlines():
             if lineStr.startswith("package: name='") :
                 infos = re.match(r"package: name='(.*?)' versionCode='(.*?)' versionName='(.*?)'", lineStr).groups()

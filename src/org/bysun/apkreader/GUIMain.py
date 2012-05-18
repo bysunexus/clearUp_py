@@ -1,10 +1,6 @@
-# -*- coding: UTF-8 -*-
-#!/usr/bin/env python
-#Boa:App:BoaApp
-
+# -*- coding: utf-8 -*-
 import wx
-
-import GUI
+from org.bysun.apkreader import GUI
 
 modules ={u'GUI': [1, 'Main frame of Application', u'GUI.py']}
 

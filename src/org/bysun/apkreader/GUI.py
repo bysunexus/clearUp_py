@@ -1,8 +1,7 @@
-# -*- coding: UTF-8 -*-
-#Boa:Frame:Frame1
-
+# -*- coding: utf-8 -*-
 import wx
-import Main
+from org.bysun.apkreader import Main
+from org.bysun.apkreader.codeUtils import transferCode
 from os import path
 import sys
 
@@ -51,7 +50,7 @@ class Frame1(wx.Frame):
         dialog = wx.DirDialog(None, "Choose a folder:",
               style=wx.DD_DEFAULT_STYLE | wx.DD_NEW_DIR_BUTTON)
         if dialog.ShowModal() == wx.ID_OK:
-            pathStr = dialog.GetPath()+path.sep
+            pathStr = transferCode(dialog.GetPath()+path.sep,'gbk','utf-8')
             self.pathText.SetValue(pathStr)
             self.pathText.SetToolTipString(pathStr)
             self.selectedPath = pathStr

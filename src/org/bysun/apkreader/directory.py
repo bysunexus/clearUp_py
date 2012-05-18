@@ -1,11 +1,11 @@
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 '''
 Created on 2012-5-10
 
 @author: bysun
 '''
 import os
-
+from org.bysun.apkreader.codeUtils import transferCode
 class FileListBuilder(object):
     '''
     文件列表读取
@@ -35,7 +35,7 @@ class FileListBuilder(object):
                 for f in fs[2]:
                     extName = os.path.splitext(f)[1][1:];
                     if extName in self.filter:
-                        self.fileList.append(os.path.join(fs[0],f))
+                        self.fileList.append(transferCode(os.path.join(fs[0],f), 'gbk', 'utf-8'))
                         
     def listFile(self):
         '''返回文件列表'''
