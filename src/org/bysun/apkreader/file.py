@@ -25,46 +25,47 @@ class ApkFileOperator(object):
         # 循环apk并处理
         for apk in apks:
             # 读取文件信息
-            info = self.readApkInfo(apk)
+            info = self.__readApkInfo(apk)
             # 未读取到信息 继续
             if not bool(info.pkgName) or info.version == -1:
                 continue
             #处理文件
-            self.processFile(info)
+            self.__processFile(info)
             
-    def processFile(self,info):
+    def __processFile(self,info):
         '''
         处理apk文件
         '''
         if not self.versions.has_key(info.pkgName):
             self.versions[info.pkgName] = info
-            self.renameFile(info);
+            self.__renameFile(info);
         else:
             old = self.versions.get(info.pkgName)
             if info.version>old.version:
                 #删除旧文件
-                self.deleteFile(old)
+                self.__deleteFile(old)
                 #改名新文件
-                self.renameFile(info)
+                self.__renameFile(info)
                 #放入新版本信息
                 self.versions[info.pkgName] = info
             else:
                 #删除读取到的文件
-                self.deleteFile(info)
+                self.__deleteFile(info)
             
-    def renameFile(self,info):
+    def __renameFile(self,info):
         fromFile = transferCode(info.apkFile, 'utf-8', 'gbk')
-        toFile = transferCode(self.buildFileName(info), 'utf-8', 'gbk')
+        toFile = transferCode(self.__buildFileName(info), 'utf-8', 'gbk')
         os.rename(fromFile, toFile)
+        info.apkFile = self.__buildFileName(info)
     
-    def deleteFile(self,info):
-        fileName = transferCode(self.buildFileName(info), 'utf-8', 'gbk')
+    def __deleteFile(self,info):
+        fileName = transferCode(self.__buildFileName(info), 'utf-8', 'gbk')
         os.remove(fileName)
         
-    def buildFileName(self,info):
-        return self.baseFilePath+info.pkgName+'_'+str(info.version)+'_'+info.cnName+'.apk'
+    def __buildFileName(self,info):
+        return self.baseFilePath+info.cnName+'_'+str(info.version)+'.apk'
         
-    def readApkInfo(self,apk):
+    def __readApkInfo(self,apk):
         '''
         读取并返回apk信息
         @return: ApkInfoDto
@@ -84,4 +85,3 @@ class ApkFileOperator(object):
                 infos = re.match(r"application: label='(.*?)' icon='.*?'", lineStr).groups()
                 info.cnName = infos[0]
         return info
-print os.getcwd()+os.sep
