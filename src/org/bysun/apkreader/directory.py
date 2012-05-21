@@ -17,9 +17,9 @@ class FileListBuilder(object):
         self.fileList = []
         self.basePath = basePath
         self.filter = filterStr
-        self.buildListFile()
+        self.__buildListFile()
         
-    def validBasePath(self):
+    def __validBasePath(self):
         '''
         判断是否是已存在目录
         '''
@@ -28,9 +28,9 @@ class FileListBuilder(object):
         else:
             return False
         
-    def buildListFile(self):
+    def __buildListFile(self):
         '''创建文件列表'''
-        if self.validBasePath():
+        if self.__validBasePath():
             for fs in os.walk(self.basePath):
                 for f in fs[2]:
                     extName = os.path.splitext(f)[1][1:];
