@@ -73,7 +73,7 @@ class ApkFileOperator(object):
         # 取得文件名
         info.name = os.path.splitext(apk)[0]
         info.apkFile = apk
-        cmd = transferCode('aapt.exe dump badging "'+apk+'"','utf-8','gbk')        
+        cmd = transferCode(os.getcwd()+os.sep+'aapt.exe dump badging "'+apk+'"','utf-8','gbk')        
         for lineStr in os.popen(cmd).readlines():
             if lineStr.startswith("package: name='") :
                 infos = re.match(r"package: name='(.*?)' versionCode='(.*?)' versionName='(.*?)'", lineStr).groups()
@@ -84,3 +84,4 @@ class ApkFileOperator(object):
                 infos = re.match(r"application: label='(.*?)' icon='.*?'", lineStr).groups()
                 info.cnName = infos[0]
         return info
+print os.getcwd()+os.sep
